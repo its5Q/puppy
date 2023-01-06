@@ -1,4 +1,4 @@
-import std/strutils, webby
+import std/strutils, webby, platforms/win32/windefs
 
 export webby
 
@@ -19,6 +19,13 @@ type
     headers*: HttpHeaders
     code*: int
     body*: string
+
+  StreamResponse* = ref object
+    headers*: HttpHeaders
+    code*: int
+    body*: string
+    when defined(windows) and not defined(puppyLibcurl):
+      hSession*, hConnect*, hRequest*: HINTERNET
 
   PuppyError* = object of IOError ## Raised if an operation fails.
 

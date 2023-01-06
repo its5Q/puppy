@@ -32,6 +32,19 @@ proc fetch*(req: Request): Response {.raises: [PuppyError].} =
 
   platform.fetch(req)
 
+proc fetchStream*(req: Request): StreamResponse {.raises: [PuppyError].} =
+  if req.url.scheme notin ["http", "https"]:
+    raise newException(
+      PuppyError, "Unsupported request scheme: " & req.url.scheme
+    )
+
+  req.addDefaultHeaders()
+
+  if req.timeout == 0:
+    req.timeout = 60
+
+  platform.fetchStream(req)
+
 proc newRequest*(
   url: string,
   verb = "get",
@@ -100,3 +113,9 @@ proc fetch*(url: string, headers = emptyHttpHeaders()): string =
   raise newException(PuppyError,
     "Non 200 response code: " & $res.code & "\n" & res.body
   )
+
+proc read*(r: StreamResponse, amount: int): bool =
+  platform.read(r, amount)
+
+proc close*(r: StreamResponse) = 
+  platform.close(r)
