@@ -507,6 +507,8 @@ proc read*(r: StreamResponse, amount: int): bool {.raises: [PuppyError].} =
       PuppyError, "WinHttpReadData error: " & $GetLastError()
     )
 
+  r.body.setLen(bytesRead)
+
   result = bytesRead > 0
 
 proc close*(r: StreamResponse) = 
