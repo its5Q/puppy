@@ -23,6 +23,7 @@ type
 
   StreamResponse* = ref object
     headers*: HttpHeaders
+    url*: string
     code*: int
     body*: string
     when defined(windows) and not defined(puppyLibcurl):
